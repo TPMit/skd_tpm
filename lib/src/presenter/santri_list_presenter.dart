@@ -44,6 +44,12 @@ class SantriListPresenter implements SantriListPresenterAbstract {
           status: element.status.toString(),
         ));
       }
+      _santriListModel.isloading = false;
+      _santriListState.refreshData(_santriListModel);
+    }).catchError((error) {
+      _santriListState.onError(error);
+      _santriListModel.isloading = false;
+      _santriListState.refreshData(_santriListModel);
     });
   }
 
