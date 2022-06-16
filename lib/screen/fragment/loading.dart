@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class Loading extends StatefulWidget {
   const Loading({Key? key}) : super(key: key);
@@ -32,7 +33,8 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/img/loading_driver.gif", fit: BoxFit.cover),
+              Lottie.asset('assets/icons/loading.json'),
+              // Image.asset("assets/img/loading_driver.gif", fit: BoxFit.cover),
               const Text(
                 "Tunggu Sebentar !",
                 textAlign: TextAlign.center,
@@ -40,7 +42,7 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
               ),
             ],
           ),
-          color: const Color(0xFF363567)),
+          color: const Color(0XFFA0D995)),
     );
   }
 }

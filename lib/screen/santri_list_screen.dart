@@ -4,8 +4,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:siakad_tpm/screen/fragment/loading.dart';
 import 'package:siakad_tpm/src/model/santri_list_model.dart';
 import 'package:siakad_tpm/src/presenter/santri_list_presenter.dart';
 
@@ -48,7 +48,9 @@ class _SantriListScreenState extends State<SantriListScreen> implements SantriLi
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return _santriListModel.isloading
+    ? const Loading()
+    : SafeArea(
       child: Scaffold(
         body: Container(
           width: MediaQuery.of(context).size.width,
@@ -77,8 +79,9 @@ class _SantriListScreenState extends State<SantriListScreen> implements SantriLi
               ),
               _santriListModel.santri.isEmpty
               ? Container(
+                padding: const EdgeInsets.only(top: 25.0),
                       child: Center(
-                      child: Text('Belum Ada Paket Yang Dikerjakan',
+                      child: Text('Belum Ada data',
                           style: GoogleFonts.poppins(
                             fontStyle: FontStyle.italic,
                             textStyle:
@@ -234,6 +237,8 @@ class _SantriListScreenState extends State<SantriListScreen> implements SantriLi
 
   @override
   void refreshData(SantriListModel santriListModel) {
-    _santriListModel = santriListModel;
+    setState(() {
+      _santriListModel = santriListModel;
+    });
   }
 }
