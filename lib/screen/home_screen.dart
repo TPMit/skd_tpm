@@ -8,6 +8,7 @@ import 'package:siakad_tpm/screen/fragment/utils/category_card_home.dart';
 import 'package:siakad_tpm/screen/fragment/utils/maklumat_card_home.dart';
 
 import '../src/resources/session.dart';
+import 'fragment/home/maklumat_home.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({ Key? key }) : super(key: key);
@@ -208,37 +209,26 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Maklumat list', style: TextStyle(
+                  const Text('Maklumat terbaru', style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),),
-                  Text('Lihat semua',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 16,
+                  InkWell(
+                    onTap: () {},
+                    child: Text('Lihat semua',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 16,
+                      ),
                     ),
                   )
                 ],
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 25,
             ),
-            Expanded(
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: const [
-                  MaklumatCard(
-                    desc: 'Masjid Seribu Tiang',
-                    maklumatImagePath: 'assets/img/masjid1.jpg',
-                  ),
-                  MaklumatCard(
-                    desc: 'Taj-mahal nya sunter',
-                    maklumatImagePath: 'assets/img/masjid2.jpg',
-                  )
-                ],
-              )
-            )
+            const MaklumatWidget(),
 
           ],
         ),

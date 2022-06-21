@@ -1,3 +1,4 @@
+import 'package:siakad_tpm/src/response/get_chart_response.dart';
 import 'package:siakad_tpm/src/response/product_response.dart';
 
 // class Shopping {
@@ -25,4 +26,5 @@ class ShoppingModel {
   bool isloading = false;
   bool isSuccess = false;
   ProductResponse productResponse = ProductResponse();
+  GetCartResponse getCartResponse = GetCartResponse();
 }

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:siakad_tpm/screen/fragment/loading.dart';
 import 'package:siakad_tpm/src/model/shopping_model.dart';
 import 'package:siakad_tpm/src/presenter/shopping_presenter.dart';
+import 'package:siakad_tpm/helper/getStorage.dart' as constant;
 
 import '../src/state/shopping_state.dart';
-import 'fragment/store/custom_text.dart';
-import 'fragment/store/shopping_cart.dart';
 
 class ShoopingScreen extends StatefulWidget {
   const ShoopingScreen({ Key? key }) : super(key: key);
@@ -28,7 +27,12 @@ class _ShoopingScreenState extends State<ShoopingScreen> implements ShoppingStat
   void initState() {
     _shoppingPresenter.view = this;
     super.initState();
-    _shoppingPresenter.getData();
+    _shoppingPresenter.getData(GetStorage().read(constant.idUser));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
   
   @override
@@ -36,7 +40,7 @@ class _ShoopingScreenState extends State<ShoopingScreen> implements ShoppingStat
     return _shoppingModel.isloading
     ? const Loading()
     : Scaffold(
-      appBar: buildAppBar(),
+      appBar: buildAppBar(context),
       body: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -65,7 +69,12 @@ class _ShoopingScreenState extends State<ShoopingScreen> implements ShoppingStat
                             _shoppingModel.productResponse.dataProduct!.length,
                         itemBuilder: (BuildContext ctx, index) {
                           return GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              _shoppingPresenter.addCart(GetStorage().read(constant.idUser), _shoppingModel
+                                              .productResponse
+                                              .dataProduct![index]
+                                              .id.toString());
+                            },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
@@ -77,23 +86,28 @@ class _ShoopingScreenState extends State<ShoopingScreen> implements ShoppingStat
                                     // height: 180,
                                     // width: 160,
                                     decoration: BoxDecoration(
-                                      color: const Color(0XFFA0D995),
-                                      borderRadius: BorderRadius.circular(16),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.3),
+                                          spreadRadius: 2,
+                                          blurRadius: 5,
+                                          offset: const Offset(0,
+                                              3), // changes position of shadow
+                                        ),
+                                      ],
                                     ),
-                                    child: Hero(
-                                      tag:
-                                          "${_shoppingModel.productResponse.dataProduct![index].categoryTitle}",
-                                      child: Image.network(
-                                        'https://sis.mindotek.com/assets/images/products/' +
-                                            _shoppingModel
-                                                .productResponse
-                                                .dataProduct![index]
-                                                .images![0]
-                                                .fileName
-                                                .toString(),
-                                        height: 300,
-                                        width: 300,
-                                      ),
+                                    child: Image.network(
+                                      'https://sis.mindotek.com/assets/images/products/' +
+                                          _shoppingModel
+                                              .productResponse
+                                              .dataProduct![index]
+                                              .images![0]
+                                              .fileName
+                                              .toString(),
+                                      height: 300,
+                                      width: 300,
                                     ),
                                   ),
                                 ),
@@ -125,7 +139,7 @@ class _ShoopingScreenState extends State<ShoopingScreen> implements ShoppingStat
     );
   }
 
-   AppBar buildAppBar() {
+   AppBar buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: const Color(0XFFA0D995),
       elevation: 0,
@@ -139,13 +153,17 @@ class _ShoopingScreenState extends State<ShoopingScreen> implements ShoppingStat
         IconButton(
           icon: const Icon(Icons.shopping_cart),
           onPressed: () {
-            showBarModalBottomSheet(
-              context: context,
-              builder: (context) => Container(
-                color: Colors.white,
-                child: const ShoppingCartWidget(),
-              ),
-            );
+            Navigator.pushNamed(context, '/storecart');
+            // showBarModalBottomSheet(
+            //   expand: true,
+            //   backgroundColor: Colors.transparent,
+            //   enableDrag: true,
+            //   context: context,
+            //   builder: (context) => Container(
+            //     color: Colors.white,
+            //     child: ShoppingCartWidget(getCartResponse: _shoppingModel.getCartResponse),
+            //   ),
+            // );
           },
         ),
         const SizedBox(width: 20 / 2)
@@ -172,8 +190,8 @@ class _ShoopingScreenState extends State<ShoopingScreen> implements ShoppingStat
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 2,
-        backgroundColor: Colors.amber,
-        textColor: Colors.white,
+        backgroundColor: Colors.green,
+        textColor: Colors.black,
         fontSize: 15);
   }
 

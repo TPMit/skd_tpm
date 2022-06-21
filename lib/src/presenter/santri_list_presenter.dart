@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:get_storage/get_storage.dart';
 import 'package:siakad_tpm/src/model/santri_list_model.dart';
 import 'package:siakad_tpm/src/resources/santriApi.dart';
