@@ -5,6 +5,7 @@ import 'package:siakad_tpm/src/model/maklumat_model.dart';
 import 'package:siakad_tpm/src/presenter/maklumat_presenter.dart';
 
 import '../../../src/state/maklumat_state.dart';
+import '../maklumat/maklumat_detail_screen.dart';
 
 class MaklumatWidget extends StatefulWidget {
   const MaklumatWidget({ Key? key }) : super(key: key);
@@ -49,7 +50,20 @@ class _MaklumatWidgetState extends State<MaklumatWidget> with SingleTickerProvid
           Container(
           padding: const EdgeInsets.symmetric(horizontal: 25.0),
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MaklumatDetailScreen(
+                          title: _maklumatListModel.maklumat[0].title,
+                          image: _maklumatListModel.maklumat[0].thumbnail,
+                          author: _maklumatListModel.maklumat[0].userName,
+                          date: _maklumatListModel.maklumat[0].date,
+                          text: _maklumatListModel.maklumat[0].content,
+                        ),
+                      ),
+                    );
+            },
             child: Row(
               children: [
                 Container(
@@ -101,7 +115,20 @@ class _MaklumatWidgetState extends State<MaklumatWidget> with SingleTickerProvid
         Container(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MaklumatDetailScreen(
+                          title: _maklumatListModel.maklumat[1].title,
+                          image: _maklumatListModel.maklumat[1].thumbnail,
+                          author: _maklumatListModel.maklumat[1].userName,
+                          date: _maklumatListModel.maklumat[1].date,
+                          text: _maklumatListModel.maklumat[1].content,
+                        ),
+                      ),
+                    );
+                  },
                   child: Row(
                     children: [
                       Container(

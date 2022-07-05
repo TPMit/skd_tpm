@@ -7,6 +7,7 @@ import '../state/maklumat_state.dart';
 
 abstract class MaklumatPresenterAbstract {
   set view(MaklumatListState view) {}
+  void getData() {}
   void getDataLimit() {}
 }
 
@@ -19,6 +20,34 @@ class MaklumatPresenter implements MaklumatPresenterAbstract {
   set view(MaklumatListState view) {
     _maklumatListState = view;
     _maklumatListState.refreshData(_maklumatListModel);
+  }
+
+  @override
+  void getData() {
+    _maklumatListModel.isloading = true;
+    _maklumatListState.refreshData(_maklumatListModel);
+    _maklumatServices.getData().then((value) {
+      for (var element in value.dataMaklumat!) {
+        _maklumatListModel.maklumat.add(Maklumat(
+          categoryName: element.categoryName.toString(),
+          content: element.content.toString(),
+          id: element.id.toString(),
+          slug: element.slug.toString(),
+          thumbnail: element.thumbnail.toString(),
+          title: element.title.toString(),
+          titleExcerpt: element.titleExcerpt.toString(),
+          userName: element.userName.toString(),
+          date: element.createdAt.toString(),
+        ));
+        _maklumatListModel.isloading = false;
+        _maklumatListState.refreshData(_maklumatListModel);
+      }
+    }).catchError((error) {
+      print(error.toString());
+      _maklumatListState.onError(error.toString());
+      _maklumatListModel.isloading = false;
+      _maklumatListState.refreshData(_maklumatListModel);
+    });
   }
 
   @override
@@ -36,10 +65,11 @@ class MaklumatPresenter implements MaklumatPresenterAbstract {
       title: element.title.toString(),
       titleExcerpt: element.titleExcerpt.toString(),
       userName: element.userName.toString(),
+      date: element.createdAt.toString(),
     ));
+   }
     _maklumatListModel.isloading = false;
     _maklumatListState.refreshData(_maklumatListModel);
-   }
   }).catchError((error){
     print(error.toString());
     _maklumatListState.onError(error.toString());

@@ -5,7 +5,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:siakad_tpm/screen/fragment/utils/category_card_home.dart';
-import 'package:siakad_tpm/screen/fragment/utils/maklumat_card_home.dart';
 
 import '../src/resources/session.dart';
 import 'fragment/home/maklumat_home.dart';
@@ -122,13 +121,18 @@ class _HomePageState extends State<HomePage> {
                           ),
                           const Text('Beli keperluan santri', style: TextStyle(fontSize: 14),),
                           const SizedBox(height: 12,),
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: const Color(0XFF4CACBC),
-                              borderRadius: BorderRadius.circular(12),
+                          InkWell(
+                            onTap: (){
+                              Navigator.pushNamed(context, '/store');
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: const Color(0XFF4CACBC),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Center(child: Text('Menuju Toko', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xffF9F9F9), fontSize: 16),)),
                             ),
-                            child: const Center(child: Text('Menuju Toko', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xffF9F9F9), fontSize: 16),)),
                           )
                         ],
                       ),
@@ -185,13 +189,13 @@ class _HomePageState extends State<HomePage> {
                 scrollDirection: Axis.horizontal,
                 children: const [
                   CategoryCard(
-                      iconImagePath: 'assets/icons/wallet.png',
+                      iconImagePath: 'assets/icons/cart.png',
                       categoryName: 'Store',
                       router: '/store'),
                   CategoryCard(
                       iconImagePath: 'assets/icons/finance_2.png',
-                      categoryName: 'Keuangan',
-                      router: '/keuangan'),
+                      categoryName: 'Daftar\ntransaksi',
+                      router: '/transaksiHistory'),
                   CategoryCard(
                       iconImagePath: 'assets/icons/tomb.png',
                       categoryName: 'Maklumat',
@@ -214,7 +218,9 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 18,
                   ),),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, '/maklumat');
+                    },
                     child: Text('Lihat semua',
                       style: TextStyle(
                         color: Colors.grey[600],

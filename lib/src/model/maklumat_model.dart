@@ -8,6 +8,7 @@ class Maklumat {
   String content;
   String categoryName;
   String userName;
+  String date;
   Maklumat({
   required this.id,
   required this.title,
@@ -17,6 +18,7 @@ class Maklumat {
   required this.content,
   required this.categoryName,
   required this.userName,
+  required this.date,
     });
 }
 

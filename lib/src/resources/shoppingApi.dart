@@ -7,6 +7,7 @@ import 'package:http/http.dart';
 
 import '../response/get_chart_response.dart';
 import '../response/product_response.dart';
+import '../response/transaksiHistory_response.dart';
 
 class ShoppingServices {
   final Client _client = Client();
@@ -112,6 +113,35 @@ class ShoppingServices {
       if (response.statusCode == 200) {
         Map<String, dynamic> res = jsonDecode(response.body);
         return res['message'];
+      } else {
+        return Future.error("data kosong 🤷‍♂️");
+      }
+    } on SocketException {
+      return Future.error("Yah, Internet Kamu error!😑");
+    } on HttpException {
+      print("Fungsi post ga nemu 😱");
+      // return Future.error("Fungsi post ga nemu 😱");
+      return Future.error("terjadi error");
+    } on FormatException {
+      print("Response format kacauu! 👎");
+      // return Future.error("Response format kacauu! 👎");
+      return Future.error("terjadi error");
+    } catch (e) {
+      print('====');
+      print(e.toString());
+      return Future.error(e);
+    }
+  }
+
+    Future<TransaksiHistoryResponse> getTransaksiHistory(String userId) async {
+    try {
+      final response = await _client.get(
+          Uri.parse("https://sis.mindotek.com/rest/GetTransactionByWali?user_id=$userId"));
+      print(response.body);
+      if (response.statusCode == 200) {
+        TransaksiHistoryResponse transaksiHistoryResponse =
+            TransaksiHistoryResponse.fromJson(json.decode(response.body));
+        return transaksiHistoryResponse;
       } else {
         return Future.error("data kosong 🤷‍♂️");
       }
