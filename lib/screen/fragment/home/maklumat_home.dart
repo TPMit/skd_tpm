@@ -8,14 +8,15 @@ import '../../../src/state/maklumat_state.dart';
 import '../maklumat/maklumat_detail_screen.dart';
 
 class MaklumatWidget extends StatefulWidget {
-  const MaklumatWidget({ Key? key }) : super(key: key);
+  const MaklumatWidget({Key? key}) : super(key: key);
 
   @override
   State<MaklumatWidget> createState() => _MaklumatWidgetState();
 }
 
-class _MaklumatWidgetState extends State<MaklumatWidget> with SingleTickerProviderStateMixin implements MaklumatListState {
-
+class _MaklumatWidgetState extends State<MaklumatWidget>
+    with SingleTickerProviderStateMixin
+    implements MaklumatListState {
   late AnimationController _animationController;
   late MaklumatListModel _maklumatListModel;
   late MaklumatPresenter _maklumatPresenter;
@@ -37,21 +38,20 @@ class _MaklumatWidgetState extends State<MaklumatWidget> with SingleTickerProvid
     super.dispose();
     _animationController.dispose();
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return _maklumatListModel.isloading
-    ? const Center(
-    child: CircularProgressIndicator(),
+        ? const Center(
+            child: CircularProgressIndicator(),
           )
-    : Column(
-      children: [
-          Container(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
+        : Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => MaklumatDetailScreen(
@@ -63,57 +63,57 @@ class _MaklumatWidgetState extends State<MaklumatWidget> with SingleTickerProvid
                         ),
                       ),
                     );
-            },
-            child: Row(
-              children: [
-                Container(
-                  width: 130,
-                  height: 80,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      'https://sis.mindotek.com/assets/images/posts/' +
-                       _maklumatListModel.maklumat[0].thumbnail,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  },
+                  child: Row(
                     children: [
-                      Text(
-                        _maklumatListModel.maklumat[0].titleExcerpt,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
+                      Container(
+                        width: 130,
+                        height: 80,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            'https://sis.mindotek.com/assets/images/posts/' +
+                                _maklumatListModel.maklumat[0].thumbnail,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       const SizedBox(
-                        height: 10,
+                        width: 20,
                       ),
-                      const Text(
-                        '20-06-2022',
-                        style: TextStyle(
-                          fontSize: 10,
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _maklumatListModel.maklumat[0].titleExcerpt,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text(
+                              '20-06-2022',
+                              style: TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 20.0,
-        ),
-        Container(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
@@ -174,19 +174,15 @@ class _MaklumatWidgetState extends State<MaklumatWidget> with SingleTickerProvid
                   ),
                 ),
               )
-      ],
-    );
+            ],
+          );
   }
 
   @override
-  void onError(String error) {
-    
-  }
+  void onError(String error) {}
 
   @override
-  void onSuccess(String success) {
-    
-  }
+  void onSuccess(String success) {}
 
   @override
   void refreshData(MaklumatListModel maklumatListModel) {

@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return Provider(
       data: appState,
       child: MaterialApp(
-        title: 'GMS Monitoring',
+        title: 'ADM PONPES',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: 'SFProDisplay',

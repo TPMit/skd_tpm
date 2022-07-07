@@ -1,28 +1,33 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:siakad_tpm/screen/fragment/loading.dart';
+import 'package:siakad_tpm/screen/fragment/store/custom_text.dart';
 import 'package:siakad_tpm/src/model/checkout_model.dart';
+import 'package:siakad_tpm/src/model/shopping_cart_model.dart';
 import 'package:siakad_tpm/src/presenter/checkout_presenter.dart';
 
-import '../src/state/checkout_state.dart';
+import '../../../src/state/checkout_state.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({ Key? key }) : super(key: key);
+  final ShoppingCartModel shoppingCartModel;
+  const CheckoutScreen({Key? key, required this.shoppingCartModel})
+      : super(key: key);
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutState {
-
-  
+class _CheckoutScreenState extends State<CheckoutScreen>
+    implements CheckoutState {
   late CheckoutModel _checkoutModel;
   late CheckoutPresenter _checkoutPresenter;
-  late String selectedBank;
-  late int admin = 0;
-  
-  _CheckoutScreenState(){
+  final currencyFormatter = NumberFormat.currency(locale: 'ID');
+
+  _CheckoutScreenState() {
     _checkoutPresenter = CheckoutPresenter();
   }
 
@@ -35,29 +40,34 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
   @override
   void dispose() {
     super.dispose();
+    _checkoutModel.selectedBank = "";
+    _checkoutModel.admin = 0;
   }
 
   @override
   Widget build(BuildContext context) {
     return _checkoutModel.isloading
-    ? const Loading()
-    : SafeArea(child: 
-    Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: double.infinity,
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
-              child: Row(children: [
-                InkWell(
-                  onTap: (){},
-                  child: const Icon(LineIcons.arrowLeft),
-                )
-              ]),
-            ),
-            Expanded(
+        ? const Loading()
+        : SafeArea(
+            child: Scaffold(
+            body: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: double.infinity,
+              child: Column(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.only(top: 30, left: 20, right: 20),
+                    child: Row(children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: const Icon(LineIcons.arrowLeft),
+                      )
+                    ]),
+                  ),
+                  Expanded(
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       width: MediaQuery.of(context).size.width,
@@ -80,10 +90,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                                 textAlign: TextAlign.center,
                               ),
                             ),
+                            const SizedBox(
+                              height: 8.0,
+                            ),
                             Container(
-                              child: const Text(
-                                'Ilham',
-                                style: TextStyle(
+                              child: Text(
+                                'Nama Santri : ' +
+                                    widget.shoppingCartModel.namaSantri,
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
@@ -91,12 +105,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                                 textAlign: TextAlign.center,
                               ),
                             ),
+                            const SizedBox(
+                              height: 8.0,
+                            ),
                             Container(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('Psikotes Online'),
-                                  const Text('Komplek, Duta Mas__________')
+                                children: const [
+                                  Text('ADM PONPES'),
                                 ],
                               ),
                             ),
@@ -135,9 +151,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
-                                        child: const Text(
-                                          "20.000",
-                                          style: TextStyle(
+                                        child: Text(
+                                          currencyFormatter.format(widget
+                                              .shoppingCartModel.totalHarga),
+                                          style: const TextStyle(
                                               color: Colors.red,
                                               fontSize: 24,
                                               fontWeight: FontWeight.bold),
@@ -165,11 +182,51 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                         ),
                       ),
                     ),
-                  )
-          ],
-        ),
-      ),
-    ));
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(8),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_checkoutModel.selectedBank == '') {
+                          Fluttertoast.showToast(
+                              msg: "Metode pembayaran\n harus dipilih",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        } else {
+                          _checkoutPresenter.checkout(widget.shoppingCartModel);
+                        }
+                      },
+                      child: PhysicalModel(
+                        color: Colors.grey.withOpacity(.4),
+                        elevation: 2,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: const Color(0XFF4CACBC),
+                            ),
+                            child: Container(
+                              margin: const EdgeInsets.all(14),
+                              alignment: Alignment.center,
+                              child: const CustomText(
+                                text: 'Checkout',
+                                color: Colors.white,
+                                size: 22,
+                                weight: FontWeight.bold,
+                              ),
+                            )),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ));
   }
 
   Widget buildCard(String title) {
@@ -206,8 +263,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'BCA';
-                    admin = 5000;
+                    _checkoutModel.selectedBank = 'BCA';
+                    _checkoutModel.admin = 5000;
                   });
                 },
                 child: Container(
@@ -216,7 +273,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'BCA'
+                      color: _checkoutModel.selectedBank == 'BCA'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -225,7 +282,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -248,8 +306,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'bri';
-                    admin = 4000;
+                    _checkoutModel.selectedBank = 'bri';
+                    _checkoutModel.admin = 4000;
                   });
                 },
                 child: Container(
@@ -258,7 +316,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'bri'
+                      color: _checkoutModel.selectedBank == 'bri'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -267,7 +325,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -290,8 +349,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'permata';
-                    admin = 4000;
+                    _checkoutModel.selectedBank = 'permata';
+                    _checkoutModel.admin = 4000;
                   });
                 },
                 child: Container(
@@ -300,7 +359,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'permata'
+                      color: _checkoutModel.selectedBank == 'permata'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -309,7 +368,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -333,8 +393,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'bni';
-                    admin = 4000;
+                    _checkoutModel.selectedBank = 'bni';
+                    _checkoutModel.admin = 4000;
                   });
                 },
                 child: Container(
@@ -343,7 +403,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'bni'
+                      color: _checkoutModel.selectedBank == 'bni'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -352,7 +412,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -375,8 +436,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'mandiri';
-                    admin = 4000;
+                    _checkoutModel.selectedBank = 'mandiri';
+                    _checkoutModel.admin = 4000;
                   });
                 },
                 child: Container(
@@ -385,7 +446,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'mandiri'
+                      color: _checkoutModel.selectedBank == 'mandiri'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -394,7 +455,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -417,8 +479,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'BSI';
-                    admin = 5000;
+                    _checkoutModel.selectedBank = 'BSI';
+                    _checkoutModel.admin = 5000;
                   });
                 },
                 child: Container(
@@ -427,7 +489,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'BSI'
+                      color: _checkoutModel.selectedBank == 'BSI'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -436,7 +498,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -467,8 +530,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'gopay';
-                    admin = 1000;
+                    _checkoutModel.selectedBank = 'gopay';
+                    _checkoutModel.admin = 1000;
                   });
                 },
                 child: Container(
@@ -477,7 +540,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'gopay'
+                      color: _checkoutModel.selectedBank == 'gopay'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -486,7 +549,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -509,8 +573,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'dana';
-                    admin = 1000;
+                    _checkoutModel.selectedBank = 'dana';
+                    _checkoutModel.admin = 1000;
                   });
                 },
                 child: Container(
@@ -519,7 +583,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'dana'
+                      color: _checkoutModel.selectedBank == 'dana'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -528,7 +592,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -551,8 +616,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'ovo';
-                    admin = 1000;
+                    _checkoutModel.selectedBank = 'ovo';
+                    _checkoutModel.admin = 1000;
                   });
                 },
                 child: Container(
@@ -561,7 +626,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'ovo'
+                      color: _checkoutModel.selectedBank == 'ovo'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -570,7 +635,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -579,16 +645,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                     children: [
                       Center(
                         child: Container(
-                            // width: 43,
-                            // margin: const EdgeInsets.all(5),
-                            // child: ClipRRect(
-                            //   // borderRadius: BorderRadius.circular(10),
-                            //   child: SvgPicture.network(
-                            //     'https://dashboard.xendit.co/assets/images/ovo-logo.svg',
-                            //     width: 45,
-                            //   ),
-                            // )
-                            ),
+                            width: 43,
+                            margin: const EdgeInsets.all(5),
+                            child: ClipRRect(
+                              // borderRadius: BorderRadius.circular(10),
+                              child: SvgPicture.network(
+                                'https://dashboard.xendit.co/assets/images/ovo-logo.svg',
+                                width: 45,
+                              ),
+                            )),
                       ),
                     ],
                   ),
@@ -597,8 +662,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'shopeepay';
-                    admin = 1000;
+                    _checkoutModel.selectedBank = 'shopeepay';
+                    _checkoutModel.admin = 1000;
                   });
                 },
                 child: Container(
@@ -607,7 +672,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'shopeepay'
+                      color: _checkoutModel.selectedBank == 'shopeepay'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -616,7 +681,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -647,8 +713,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'credit_card';
-                    admin = 4000;
+                    _checkoutModel.selectedBank = 'credit_card';
+                    _checkoutModel.admin = 4000;
                   });
                 },
                 child: Container(
@@ -657,7 +723,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'credit_card'
+                      color: _checkoutModel.selectedBank == 'credit_card'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -666,7 +732,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -674,7 +741,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Center(
-                        child: Container(
+                        child: SizedBox(
                             width: 38,
                             child: ClipRRect(
                               // borderRadius: BorderRadius.circular(10),
@@ -685,7 +752,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                             )),
                       ),
                       Center(
-                        child: Container(
+                        child: SizedBox(
                             width: 38,
                             child: ClipRRect(
                               // borderRadius: BorderRadius.circular(10),
@@ -696,7 +763,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                             )),
                       ),
                       Center(
-                        child: Container(
+                        child: SizedBox(
                             width: 38,
                             child: ClipRRect(
                               // borderRadius: BorderRadius.circular(10),
@@ -720,8 +787,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedBank = 'alfamart_pay';
-                    admin = 5000;
+                    _checkoutModel.selectedBank = 'alfamart_pay';
+                    _checkoutModel.admin = 5000;
                   });
                 },
                 child: Container(
@@ -730,7 +797,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                   margin: const EdgeInsets.only(
                       left: 20, right: 20, bottom: 7.5, top: 7.5),
                   decoration: BoxDecoration(
-                      color: selectedBank == 'alfamart_pay'
+                      color: _checkoutModel.selectedBank == 'alfamart_pay'
                           ? Colors.grey[400]
                           : Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -739,7 +806,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ]),
                   padding: const EdgeInsets.all(10),
@@ -768,14 +836,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> implements CheckoutStat
   }
 
   @override
-  void onError(String error) {
-    
-  }
+  void onError(String error) {}
 
   @override
-  void onSuccess(String success) {
-    
-  }
+  void onSuccess(String success) {}
 
   @override
   void refreshData(CheckoutModel checkoutModel) {

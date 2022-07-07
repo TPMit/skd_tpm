@@ -72,7 +72,7 @@ class DataSantri {
     id = json['id'];
     roleId = json['role_id'];
     status = json['status'];
-    images = json['images'];
+    images = json['images'] ?? 'kosong';
   }
 
   Map<String, dynamic> toJson() {

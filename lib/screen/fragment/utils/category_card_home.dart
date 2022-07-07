@@ -4,7 +4,12 @@ class CategoryCard extends StatelessWidget {
   final String iconImagePath;
   final String categoryName;
   final String router;
-  const CategoryCard({ Key? key, required this.iconImagePath, required this.categoryName, required this.router }) : super(key: key);
+  const CategoryCard(
+      {Key? key,
+      required this.iconImagePath,
+      required this.categoryName,
+      required this.router})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +19,7 @@ class CategoryCard extends StatelessWidget {
       },
       child: Ink(
         child: Padding(
-          padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+          padding: const EdgeInsets.only(left: 20.0, right: 20.0),
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(

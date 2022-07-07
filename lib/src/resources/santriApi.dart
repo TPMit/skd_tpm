@@ -8,9 +8,10 @@ class SantriServices {
   final Client _client = Client();
 
   Future<SantryByWaliResponse> getData(String idWali) async {
-    try{
-      final response = await _client.get(
-          Uri.parse("https://sis.mindotek.com/rest/getsantribywali?user_id=$idWali"));
+    print(idWali);
+    try {
+      final response = await _client.get(Uri.parse(
+          "https://sis.mindotek.com/rest/getsantribywali?user_id=$idWali"));
       print(response.body);
       if (response.statusCode == 200) {
         SantryByWaliResponse santryByWaliResponse =
@@ -19,7 +20,6 @@ class SantriServices {
       } else {
         return Future.error("data kosong 🤷‍♂️");
       }
-
     } on SocketException {
       return Future.error("Yah, Internet Kamu error!😑");
     } on HttpException {
