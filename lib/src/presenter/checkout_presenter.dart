@@ -41,9 +41,16 @@ class CheckoutPresenter implements CheckoutPresenterAbstract {
       "id_chart": _checkoutModel.idCart,
       "santri_id": shoppingCartModel.idSantri,
     };
-
-    print(json.encode(body));
-    print('end');
+    // print(json.encode(body));
+    _checkoutServices.bayarPost(json.encode(body)).then((value) {
+      _checkoutState.onSuccess(value);
+      _checkoutModel.isloading = false;
+      _checkoutState.refreshData(_checkoutModel);
+    }).catchError((error) {
+      _checkoutState.onError(error);
+      _checkoutModel.isloading = false;
+      _checkoutState.refreshData(_checkoutModel);
+    });
   }
 
   @override
