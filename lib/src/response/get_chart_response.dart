@@ -29,14 +29,14 @@ class DataCart {
   String? categoryId;
   String? createdAt;
   String? description;
-  String? id;
-  String? price;
+  late String id;
+  late String price;
   String? stok;
   String? title;
   String? satuan;
   String? namaWali;
   String? idWaliSantri;
-  String? idCart;
+  late String idCart;
   List<Images>? images;
   late int qty;
 
@@ -45,14 +45,14 @@ class DataCart {
       this.categoryId,
       this.createdAt,
       this.description,
-      this.id,
-      this.price,
+      required this.id,
+      required this.price,
       this.stok,
       this.title,
       this.satuan,
       this.namaWali,
       this.idWaliSantri,
-      this.idCart,
+      required this.idCart,
       this.images,
       required this.qty});
 
@@ -61,14 +61,14 @@ class DataCart {
     categoryId = json['category_id'];
     createdAt = json['created_at'];
     description = json['description'];
-    id = json['id'];
-    price = json['price'];
+    id = json['id'].toString();
+    price = json['price'].toString();
     stok = json['stok'];
     title = json['title'];
     satuan = json['satuan'];
     namaWali = json['nama_wali'];
     idWaliSantri = json['id_wali_santri'];
-    idCart = json['id_cart'];
+    idCart = json['id_cart'].toString();
     if (json['images'] != null) {
       images = <Images>[];
       json['images'].forEach((v) {

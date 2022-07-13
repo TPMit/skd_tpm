@@ -9,17 +9,36 @@ class CheckoutServices {
   Dio dio = Dio();
   late Response response;
 
-  Future<String> bayarPost(String data) async {
+  Future<String> bayarPost(
+      String userId,
+      amount,
+      paymentType,
+      List<dynamic> productId,
+      price,
+      totalItem,
+      idCart,
+      String santriId) async {
     try {
+      FormData formData = FormData.fromMap({
+        "user_id": userId,
+        "amount": amount,
+        "payment_type": paymentType,
+        "product_id[]": productId,
+        "price[]": price,
+        "total_item[]": totalItem,
+        "id_cart[]": idCart,
+        "santri_id": santriId,
+      });
+      print(formData);
       final response =
-          await dio.post("https://sis.mindotek.com/rest/pay", data: data);
+          await dio.post("https://sis.mindotek.com/rest/pay", data: formData);
       if (response.data['status']) {
         return 'berhasil';
       } else {
         return Future.error("Transaksi Gagal 🤷‍♂️");
       }
-    } on SocketException {
-      return Future.error("Yah, Internet Kamu error!😑");
+    } on DioError catch (e) {
+      throw Exception(e.response!.data.toString());
     } on HttpException {
       print("Fungsi post ga nemu 😱");
       // return Future.error("Fungsi post ga nemu 😱");

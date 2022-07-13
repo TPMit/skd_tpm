@@ -186,16 +186,11 @@ class _SantriListScreenState extends State<SantriListScreen>
                                                                     .santri[
                                                                         itemIndex]
                                                                     .name +
-                                                                ", nis: " +
+                                                                '\n nis: ' +
                                                                 _santriListModel
                                                                     .santri[
                                                                         itemIndex]
-                                                                    .nis +
-                                                                '\n' +
-                                                                _santriListModel
-                                                                    .santri[
-                                                                        itemIndex]
-                                                                    .tanggalLahir,
+                                                                    .nis,
                                                             style: GoogleFonts
                                                                 .poppins(
                                                               textStyle: const TextStyle(

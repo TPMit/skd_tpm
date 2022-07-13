@@ -836,10 +836,28 @@ class _CheckoutScreenState extends State<CheckoutScreen>
   }
 
   @override
-  void onError(String error) {}
+  void onError(String error) {
+    Fluttertoast.showToast(
+        msg: error,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.red,
+        textColor: Colors.black,
+        fontSize: 15);
+  }
 
   @override
-  void onSuccess(String success) {}
+  void onSuccess(String success) {
+    Fluttertoast.showToast(
+        msg: success,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.green,
+        textColor: Colors.black,
+        fontSize: 15);
+  }
 
   @override
   void refreshData(CheckoutModel checkoutModel) {

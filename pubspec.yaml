@@ -54,7 +54,6 @@ dependencies:
   modal_bottom_sheet: ^2.1.0
   flutter_html: ^2.2.1
   flutter_credit_card: ^3.0.1
-  fxendit:
   expandable: ^5.0.1
   flutter_svg: ^0.22.0
   dropdown_search: ^3.0.1

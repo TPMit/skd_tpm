@@ -11,13 +11,12 @@ import '../response/transaksiHistory_response.dart';
 
 class ShoppingServices {
   final Client _client = Client();
-  
 
   Future<ProductResponse> getDataProduct() async {
     try {
-      final response = await _client.get(Uri.parse(
-          "https://sis.mindotek.com/rest/getproduct"));
-      print(response.body);
+      final response = await _client
+          .get(Uri.parse("https://sis.mindotek.com/rest/getproduct"));
+      // print(response.body);
       if (response.statusCode == 200) {
         ProductResponse productResponse =
             ProductResponse.fromJson(json.decode(response.body));
@@ -44,12 +43,11 @@ class ShoppingServices {
 
   Future addCart(String userId, String productId) async {
     try {
-      final response = await _client.post(
-          Uri.parse('https://sis.mindotek.com/rest/addcart'),
-          body: {
-            'user_id': userId,
-            'product_id': productId,
-          });
+      final response = await _client
+          .post(Uri.parse('https://sis.mindotek.com/rest/addcart'), body: {
+        'user_id': userId,
+        'product_id': productId,
+      });
       print(response.body);
       if (response.statusCode == 200) {
         Map<String, dynamic> res = jsonDecode(response.body);
@@ -76,8 +74,8 @@ class ShoppingServices {
 
   Future<GetCartResponse> getcart(String userId) async {
     try {
-      final response = await _client
-          .get(Uri.parse("https://sis.mindotek.com/rest/getcart?user_id=$userId"));
+      final response = await _client.get(
+          Uri.parse("https://sis.mindotek.com/rest/getcart?user_id=$userId"));
       print(response.body);
       if (response.statusCode == 200) {
         GetCartResponse getCartResponse =
@@ -133,10 +131,10 @@ class ShoppingServices {
     }
   }
 
-    Future<TransaksiHistoryResponse> getTransaksiHistory(String userId) async {
+  Future<TransaksiHistoryResponse> getTransaksiHistory(String userId) async {
     try {
-      final response = await _client.get(
-          Uri.parse("https://sis.mindotek.com/rest/GetTransactionByWali?user_id=$userId"));
+      final response = await _client.get(Uri.parse(
+          "https://sis.mindotek.com/rest/GetTransactionByWali?user_id=$userId"));
       print(response.body);
       if (response.statusCode == 200) {
         TransaksiHistoryResponse transaksiHistoryResponse =
@@ -161,5 +159,4 @@ class ShoppingServices {
       return Future.error(e);
     }
   }
-
 }

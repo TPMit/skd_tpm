@@ -27,27 +27,39 @@ class CheckoutPresenter implements CheckoutPresenterAbstract {
     for (var element in shoppingCartModel.getCartResponse.dataCart!) {
       _checkoutModel.productId.add(element.id);
       _checkoutModel.price.add(element.price);
-      _checkoutModel.totalItem.add(element.qty);
+      _checkoutModel.totalItem.add(element.qty.toString());
       _checkoutModel.idCart.add(element.idCart);
     }
     print('mulai post');
-    Map<String, dynamic> body = {
-      "user_id": GetStorage().read(constant.idUser),
-      "amount": shoppingCartModel.totalHarga,
-      "payment_type": _checkoutModel.selectedBank,
-      "product_id": _checkoutModel.productId,
-      "price": _checkoutModel.price,
-      "total_item": _checkoutModel.totalItem,
-      "id_chart": _checkoutModel.idCart,
-      "santri_id": shoppingCartModel.idSantri,
-    };
+    // Map<String, dynamic> body = {
+    //   "user_id": GetStorage().read(constant.idUser),
+    //   "amount": shoppingCartModel.totalHarga.toString(),
+    //   "payment_type": _checkoutModel.selectedBank,
+    //   "product_id": _checkoutModel.productId,
+    //   "price": _checkoutModel.price,
+    //   "total_item": _checkoutModel.totalItem,
+    //   "id_cart": _checkoutModel.idCart,
+    //   "santri_id": shoppingCartModel.idSantri,
+    // };
     // print(json.encode(body));
-    _checkoutServices.bayarPost(json.encode(body)).then((value) {
+    _checkoutServices
+        .bayarPost(
+      GetStorage().read(constant.idUser),
+      shoppingCartModel.totalHarga,
+      _checkoutModel.selectedBank,
+      _checkoutModel.productId,
+      _checkoutModel.price,
+      _checkoutModel.totalItem,
+      _checkoutModel.idCart,
+      shoppingCartModel.idSantri,
+    )
+        .then((value) {
       _checkoutState.onSuccess(value);
       _checkoutModel.isloading = false;
       _checkoutState.refreshData(_checkoutModel);
     }).catchError((error) {
-      _checkoutState.onError(error);
+      print(error.toString());
+      _checkoutState.onError(error.toString());
       _checkoutModel.isloading = false;
       _checkoutState.refreshData(_checkoutModel);
     });

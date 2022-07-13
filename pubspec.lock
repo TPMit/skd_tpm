@@ -205,13 +205,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "9.2.0"
-  fxendit:
-    dependency: "direct main"
-    description:
-      name: fxendit
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.3"
   get:
     dependency: "direct main"
     description:
